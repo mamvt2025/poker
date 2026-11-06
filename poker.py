@@ -4,31 +4,38 @@ import streamlit as st
 # Configuración de página
 st.set_page_config(page_title="Póker Valdivieso 🎰", page_icon="♠️", layout="centered")
 
-# Estilos CSS personalizados para simular una mesa de casino y cartas estilizadas
+# Estilos CSS con fondo de mesa de póker, fichas y avatares de la gente apostando
 st.markdown("""
     <style>
     .stApp {
-        background: linear-gradient(135deg, #0b4f26 0%, #052611 100%);
+        background: radial-gradient(circle, #0d5c2f 0%, #031b0e 100%);
         color: #ffffff;
     }
     .card-container {
         background-color: #ffffff;
         color: #000000;
-        border-radius: 10px;
-        padding: 15px 5px;
+        border-radius: 8px;
+        padding: 10px 0px;
         text-align: center;
-        font-size: 24px;
+        font-size: 22px;
         font-weight: bold;
-        box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-        margin: 5px;
         border: 2px solid #d4af37;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
+    .casino-table {
+        background: rgba(0, 0, 0, 0.4);
+        border: 4px dashed #d4af37;
+        border-radius: 20px;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 20px;
     }
     .avatar-box {
-        background-color: rgba(0, 0, 0, 0.3);
+        background-color: rgba(255, 255, 255, 0.1);
         border-radius: 12px;
         padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid rgba(212, 175, 55, 0.3);
+        text-align: center;
+        border: 1px solid rgba(212, 175, 55, 0.5);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -104,17 +111,16 @@ def evaluar_mano(mano):
     return (1, "Carta Alta", valores)
 
 
-# Inicialización de estado en Streamlit
+# Inicialización de estado
 if "fichas" not in st.session_state:
     st.session_state.fichas = 100
 if "estado" not in st.session_state:
-    st.session_state.estado = "INICIO"  # INICIO, CAMBIO, RESULTADO
+    st.session_state.estado = "INICIO"
 if "apuesta" not in st.session_state:
     st.session_state.apuesta = 10
 
-st.title("🎰 Póker Valdivieso")
+st.title("🎰 Póker Valdivieso - Mesa VIP")
 
-# Barra lateral con estadísticas y fichas
 st.sidebar.markdown("### 🏦 Caja del Casino")
 st.sidebar.metric(label="Tus Fichas", value=f"🪙 ${st.session_state.fichas}")
 
@@ -125,27 +131,67 @@ if st.session_state.fichas <= 0:
         st.session_state.estado = "INICIO"
         st.rerun()
 
-# FASE 1: Apuesta e inicio de mano
+# FASE 1: Mesa de apuestas con la gente apostando y vista previa de cartas
 if st.session_state.estado == "INICIO" and st.session_state.fichas > 0:
-    st.markdown("### 🎲 Realiza tu apuesta")
+    st.markdown("""
+        <div class="casino-table">
+            <h2>🎲 Mesa de Apuestas Valdivieso</h2>
+            <p>La gente está tomando asiento y haciendo sus apuestas alrededor de la mesa...</p>
+        </div>
+    """, unsafe_allow_html=True)
 
+    # Mostrar la gente apostando alrededor de la mesa
+    col_p1, col_p2, col_p3 = st.columns(3)
+    with col_p1:
+        st.markdown("""
+            <div class="avatar-box">
+                <span style="font-size: 30px;">🤵‍♂️ Carlos (Dealer)</span><br>
+                <small>Repartiendo la mesa</small>
+            </div>
+        """, unsafe_allow_html=True)
+    with col_p2:
+        st.markdown("""
+            <div class="avatar-box">
+                <span style="font-size: 30px;">👩‍🦰 Sofía (Apuesta)</span><br>
+                <small>🪙 Apostó $20</small>
+            </div>
+        """, unsafe_allow_html=True)
+    with col_p3:
+        st.markdown("""
+            <div class="avatar-box">
+                <span style="font-size: 30px;">🧔‍♂️ Juan (Apuesta)</span><br>
+                <small>🪙 Apostó $50</small>
+            </div>
+        """, unsafe_allow_html=True)
+
+    st.write("")
+    st.markdown("### 🃏 Elige tus fichas y revisa las cartas sobre la mesa antes de jugar")
+
+    # Vista previa de cartas decorativas para elegir la apuesta
+    prev_col1, prev_col2, prev_col3, prev_col4, prev_col5 = st.columns(5)
+    prev_col1.markdown('<div class="card-container">A♠️</div>', unsafe_allow_html=True)
+    prev_col2.markdown('<div class="card-container">K♦️</div>', unsafe_allow_html=True)
+    prev_col3.markdown('<div class="card-container">Q♣️</div>', unsafe_allow_html=True)
+    prev_col4.markdown('<div class="card-container">J❤️</div>', unsafe_allow_html=True)
+    prev_col5.markdown('<div class="card-container">10♠️</div>', unsafe_allow_html=True)
+
+    st.write("")
     # Botones rápidos de selección de fichas
-    st.write("Selecciona fichas rápidas o usa el selector:")
-    col_b1, col_b2, col_b3, col_b4 = st.columns(4)
-    with col_b1:
-        if st.button("🪙 $5"): st.session_state.apuesta = min(5, st.session_state.fichas)
-    with col_b2:
-        if st.button("🪙 $10"): st.session_state.apuesta = min(10, st.session_state.fichas)
-    with col_b3:
-        if st.button("🪙 $25"): st.session_state.apuesta = min(25, st.session_state.fichas)
-    with col_b4:
-        if st.button("🪙 $50"): st.session_state.apuesta = min(50, st.session_state.fichas)
+    c_b1, c_b2, c_b3, c_b4 = st.columns(4)
+    with c_b1:
+        if st.button("🪙 Ficha $5"): st.session_state.apuesta = min(5, st.session_state.fichas)
+    with c_b2:
+        if st.button("🪙 Ficha $10"): st.session_state.apuesta = min(10, st.session_state.fichas)
+    with c_b3:
+        if st.button("🪙 Ficha $25"): st.session_state.apuesta = min(25, st.session_state.fichas)
+    with c_b4:
+        if st.button("🪙 Ficha $50"): st.session_state.apuesta = min(50, st.session_state.fichas)
 
-    apuesta = st.number_input("Monto de apuesta:", min_value=5, max_value=st.session_state.fichas,
+    apuesta = st.number_input("Monto de tu apuesta actual:", min_value=5, max_value=st.session_state.fichas,
                               value=st.session_state.apuesta, step=5)
     st.session_state.apuesta = apuesta
 
-    if st.button("♠️ Repartir Cartas", type="primary", use_container_width=True):
+    if st.button("🚀 ¡Sentarse y Repartir Cartas!", type="primary", use_container_width=True):
         st.session_state.mazo = Mazo()
         st.session_state.mano_jugador = st.session_state.mazo.repartir(5)
         st.session_state.mano_pc = st.session_state.mazo.repartir(5)
@@ -154,139 +200,6 @@ if st.session_state.estado == "INICIO" and st.session_state.fichas > 0:
 
 # FASE 2: Selección de cartas a descartar
 elif st.session_state.estado == "CAMBIO":
-    # Avatar de la Computadora en la parte superior
     st.markdown("""
-        <div class="avatar-box" style="display: flex; align-items: center; gap: 15px;">
-            <span style="font-size: 40px;">🤖</span>
-            <div>
-                <h4 style="margin: 0; color: #d4af37;">Dealer Bot (Computadora)</h4>
-                <p style="margin: 0; font-size: 14px;">Analizando la mesa y esperando tu jugada...</p>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("---")
-
-    # Avatar del Jugador y sus cartas
-    st.markdown("""
-        <div class="avatar-box" style="display: flex; align-items: center; gap: 15px;">
-            <span style="font-size: 40px;">🤠</span>
-            <div>
-                <h4 style="margin: 0; color: #d4af37;">Tú (Jugador Valdivieso)</h4>
-                <p style="margin: 0; font-size: 14px;">Selecciona las casillas de las cartas que deseas cambiar.</p>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-
-    cols = st.columns(5)
-    descartes = []
-
-    for i, carta in enumerate(st.session_state.mano_jugador):
-        with cols[i]:
-            # Renderizado visual de carta estilo casino
-            color_cart = "#ff4b4b" if carta.palo in ['Corazones', 'Diamantes'] else "#111111"
-            st.markdown(f"""
-                <div style="background-color: white; color: {color_cart}; border-radius: 8px; padding: 12px 0px; text-align: center; font-size: 22px; font-weight: bold; border: 2px solid #ccc; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-                    {carta.valor} <span style="font-size: 26px;">{carta.simbolo}</span>
-                </div>
-            """, unsafe_allow_html=True)
-            if st.checkbox(f"Cambiar #{i + 1}", key=f"c_{i}"):
-                descartes.append(i)
-
-    st.write("")
-    if st.button("🔄 Procesar Cambio y Evaluar", type="primary", use_container_width=True):
-        if descartes:
-            nuevas_cartas = st.session_state.mazo.repartir(len(descartes))
-            for idx, nueva in zip(descartes, nuevas_cartas):
-                st.session_state.mano_jugador[idx] = nueva
-
-        # IA simple para la computadora
-        eval_pc_inicial = evaluar_mano(st.session_state.mano_pc)
-        if eval_pc_inicial[0] < 2:
-            indices_pc = random.sample(range(5), 2)
-            nuevas_pc = st.session_state.mazo.repartir(2)
-            for idx, nueva in zip(indices_pc, nuevas_pc):
-                st.session_state.mano_pc[idx] = nueva
-
-        st.session_state.estado = "RESULTADO"
-        st.rerun()
-
-# FASE 3: Mostrar resultados
-elif st.session_state.estado == "RESULTADO":
-    res_jugador = evaluar_mano(st.session_state.mano_jugador)
-    res_pc = evaluar_mano(st.session_state.mano_pc)
-
-    # Mostrar Computadora con Avatar
-    st.markdown("""
-        <div class="avatar-box" style="display: flex; align-items: center; gap: 15px;">
-            <span style="font-size: 40px;">🤖</span>
-            <div>
-                <h4 style="margin: 0; color: #d4af37;">Dealer Bot</h4>
-                <p style="margin: 0; font-size: 14px;">Mano final: <b>{}</b></p>
-            </div>
-        </div>
-    """.format(res_pc[1]), unsafe_allow_html=True)
-
-    cols_pc = st.columns(5)
-    for i, carta in enumerate(st.session_state.mano_pc):
-        with cols_pc[i]:
-            color_pc = "#ff4b4b" if carta.palo in ['Corazones', 'Diamantes'] else "#111111"
-            st.markdown(f"""
-                <div style="background-color: white; color: {color_pc}; border-radius: 8px; padding: 10px 0px; text-align: center; font-size: 20px; font-weight: bold; border: 2px solid #ccc;">
-                    {carta.valor} {carta.simbolo}
-                </div>
-            """, unsafe_allow_html=True)
-
-    st.divider()
-
-    # Mostrar Jugador con Avatar
-    st.markdown("""
-        <div class="avatar-box" style="display: flex; align-items: center; gap: 15px;">
-            <span style="font-size: 40px;">🤠</span>
-            <div>
-                <h4 style="margin: 0; color: #d4af37;">Tus Cartas Finales</h4>
-                <p style="margin: 0; font-size: 14px;">Tu jugada: <b>{}</b></p>
-            </div>
-        </div>
-    """.format(res_jugador[1]), unsafe_allow_html=True)
-
-    cols_j = st.columns(5)
-    for i, carta in enumerate(st.session_state.mano_jugador):
-        with cols_j[i]:
-            color_j = "#ff4b4b" if carta.palo in ['Corazones', 'Diamantes'] else "#111111"
-            st.markdown(f"""
-                <div style="background-color: white; color: {color_j}; border-radius: 8px; padding: 10px 0px; text-align: center; font-size: 20px; font-weight: bold; border: 2px solid #ccc;">
-                    {carta.valor} {carta.simbolo}
-                </div>
-            """, unsafe_allow_html=True)
-
-    # Determinar ganador
-    ganado = False
-    empate = False
-    if res_jugador[0] > res_pc[0]:
-        ganado = True
-    elif res_jugador[0] < res_pc[0]:
-        ganado = False
-    else:
-        if res_jugador[2] > res_pc[2]:
-            ganado = True
-        elif res_jugador[2] < res_pc[2]:
-            ganado = False
-        else:
-            empate = True
-
-    st.markdown("### 🏆 Resultado de la Ronda")
-    if empate:
-        st.warning("🤝 ¡Empate! Se te devuelve la apuesta.")
-    elif ganado:
-        st.balloons()
-        st.success(f"🎉 ¡Has ganado ${st.session_state.apuesta}! 🎉")
-        st.session_state.fichas += st.session_state.apuesta
-    else:
-        st.error(f"💀 Has perdido ${st.session_state.apuesta}.")
-        st.session_state.fichas -= st.session_state.apuesta
-
-    st.write("")
-    if st.button("🎮 Jugar Otra Mano", type="primary", use_container_width=True):
-        st.session_state.estado = "INICIO"
-        st.rerun()
+        <div class="avatar-box" style="margin-bottom: 15px;">
+            <h4 style="margin
