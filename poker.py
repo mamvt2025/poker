@@ -2,7 +2,7 @@ import random
 import streamlit as st
 
 # Configuración de página
-st.set_page_config(page_title="Póker Streamlit", page_icon="♠️", layout="centered")
+st.set_page_config(page_title="Póker Valdivieso ucacue", page_icon="♠️", layout="centered")
 
 PALOS = {'Corazones': '❤️', 'Diamantes': '♦️', 'Tréboles': '♣️', 'Picas': '♠️'}
 VALORES = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
