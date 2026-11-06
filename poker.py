@@ -4,11 +4,11 @@ import streamlit as st
 # Configuración de página
 st.set_page_config(page_title="Póker Valdivieso 🎰", page_icon="♠️", layout="centered")
 
-# Estilos CSS con fondo verde de casino claro, diseño de mesa central y esquinas para los jugadores
+# Estilos CSS con fondo de mesa de póker claro, luminoso y distribución en esquinas
 st.markdown("""
     <style>
     .stApp {
-        background: radial-gradient(circle at center, #1b5e20 0%, #0d3811 100%);
+        background: radial-gradient(circle at center, #2e7d32 0%, #1b5e20 100%);
         color: #ffffff;
     }
     .card-container {
@@ -20,23 +20,22 @@ st.markdown("""
         font-size: 22px;
         font-weight: bold;
         border: 2px solid #d4af37;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
     .poker-table {
-        background: radial-gradient(ellipse at center, #2e7d32 0%, #1b5e20 70%, #0f3811 100%);
-        border: 8px solid #8d6e63;
-        border-radius: 150px;
-        padding: 30px;
+        background: radial-gradient(ellipse at center, #4caf50 0%, #2e7d32 70%, #1b5e20 100%);
+        border: 10px solid #a1887f;
+        border-radius: 120px;
+        padding: 25px;
         margin: 20px 0px;
-        box-shadow: inset 0 0 30px rgba(0,0,0,0.6), 0 10px 20px rgba(0,0,0,0.4);
-        position: relative;
+        box-shadow: inset 0 0 25px rgba(0,0,0,0.4), 0 8px 16px rgba(0,0,0,0.4);
     }
     .player-corner {
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.45);
         border-radius: 12px;
         padding: 10px;
         text-align: center;
-        border: 2px solid #d4af37;
+        border: 2px solid #ffd700;
         box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
     </style>
@@ -133,37 +132,37 @@ if st.session_state.fichas <= 0:
         st.session_state.estado = "INICIO"
         st.rerun()
 
-# FASE 1: Mesa de póker con jugadores en las 4 esquinas
+# FASE 1: Mesa clara con jugadores en cada esquina
 if st.session_state.estado == "INICIO" and st.session_state.fichas > 0:
-    st.markdown("### 🎲 Mesa de Póker Activa")
+    st.markdown("### 🎲 Mesa de Póker Abierta")
 
-    # Contenedor simulando la mesa ovalada con los jugadores en las esquinas
+    # Contenedor principal de la mesa
     st.markdown('<div class="poker-table">', unsafe_allow_html=True)
 
-    # Fila superior de la mesa (Jugador 1 y Jugador 2)
-    col_esq1, col_esq2 = st.columns(2)
-    with col_esq1:
+    # Esquinas Superiores (Dealer Bot y Sofía)
+    c_top1, c_top2 = st.columns(2)
+    with c_top1:
         st.markdown("""
             <div class="player-corner">
-                <span style="font-size: 28px;">🤖</span><br>
+                <span style="font-size: 26px;">🤖</span><br>
                 <b>Dealer Bot</b><br>
                 <small>🪙 Casa</small>
             </div>
         """, unsafe_allow_html=True)
-    with col_esq2:
+    with c_top2:
         st.markdown("""
             <div class="player-corner">
-                <span style="font-size: 28px;">👩‍🦰</span><br>
+                <span style="font-size: 26px;">👩‍🦰</span><br>
                 <b>Sofía</b><br>
                 <small>🪙 Apostó $20</small>
             </div>
         """, unsafe_allow_html=True)
 
     st.write("")
-    st.markdown("<h4 style='text-align: center; color: #ffeb3b;'>♠️ Pote Central & Cartas de Referencia ♥️</h4>",
+    st.markdown("<h4 style='text-align: center; color: #fff59d;'>♠️ Cartas de Referencia en la Mesa ♥️</h4>",
                 unsafe_allow_html=True)
 
-    # Vista previa de cartas en el centro de la mesa
+    # Cartas de referencia centrales
     prev_col1, prev_col2, prev_col3, prev_col4, prev_col5 = st.columns(5)
     prev_col1.markdown('<div class="card-container">A♠️</div>', unsafe_allow_html=True)
     prev_col2.markdown('<div class="card-container">K♦️</div>', unsafe_allow_html=True)
@@ -173,20 +172,20 @@ if st.session_state.estado == "INICIO" and st.session_state.fichas > 0:
 
     st.write("")
 
-    # Fila inferior de la mesa (Jugador 3 y Tú)
-    col_esq3, col_esq4 = st.columns(2)
-    with col_esq3:
+    # Esquinas Inferiores (Juan y Tú)
+    c_bot1, c_bot2 = st.columns(2)
+    with c_bot1:
         st.markdown("""
             <div class="player-corner">
-                <span style="font-size: 28px;">🧔‍♂️</span><br>
+                <span style="font-size: 26px;">🧔‍♂️</span><br>
                 <b>Juan</b><br>
                 <small>🪙 Apostó $50</small>
             </div>
         """, unsafe_allow_html=True)
-    with col_esq4:
+    with c_bot2:
         st.markdown(f"""
-            <div class="player-corner" style="border-color: #00e676;">
-                <span style="font-size: 28px;">🤠</span><br>
+            <div class="player-corner" style="border-color: #69f0ae;">
+                <span style="font-size: 26px;">🤠</span><br>
                 <b>Tú (Valdivieso)</b><br>
                 <small>🪙 Fichas: ${st.session_state.fichas}</small>
             </div>
@@ -194,7 +193,7 @@ if st.session_state.estado == "INICIO" and st.session_state.fichas > 0:
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("### 🪙 Selecciona tu apuesta")
+    st.markdown("### 🪙 Elige tu Apuesta")
     c_b1, c_b2, c_b3, c_b4 = st.columns(4)
     with c_b1:
         if st.button("🪙 $5"): st.session_state.apuesta = min(5, st.session_state.fichas)
@@ -220,7 +219,7 @@ if st.session_state.estado == "INICIO" and st.session_state.fichas > 0:
 elif st.session_state.estado == "CAMBIO":
     st.markdown("""
         <div class="player-corner" style="margin-bottom: 15px;">
-            <h4 style="margin: 0; color: #d4af37;">🤖 Dealer Bot (Computadora)</h4>
+            <h4 style="margin: 0; color: #ffd700;">🤖 Dealer Bot (Computadora)</h4>
             <p style="margin: 0; font-size: 14px;">La casa observa tus movimientos en la mesa...</p>
         </div>
     """, unsafe_allow_html=True)
@@ -233,7 +232,7 @@ elif st.session_state.estado == "CAMBIO":
         with cols[i]:
             color_cart = "#ff4b4b" if carta.palo in ['Corazones', 'Diamantes'] else "#111111"
             st.markdown(f"""
-                <div style="background-color: white; color: {color_cart}; border-radius: 8px; padding: 12px 0px; text-align: center; font-size: 22px; font-weight: bold; border: 2px solid #d4af37; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+                <div style="background-color: white; color: {color_cart}; border-radius: 8px; padding: 12px 0px; text-align: center; font-size: 22px; font-weight: bold; border: 2px solid #ffd700; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
                     {carta.valor} <span style="font-size: 26px;">{carta.simbolo}</span>
                 </div>
             """, unsafe_allow_html=True)
@@ -263,57 +262,3 @@ elif st.session_state.estado == "RESULTADO":
     res_pc = evaluar_mano(st.session_state.mano_pc)
 
     st.markdown("### 🤖 Mano de la Computadora")
-    cols_pc = st.columns(5)
-    for i, carta in enumerate(st.session_state.mano_pc):
-        with cols_pc[i]:
-            color_pc = "#ff4b4b" if carta.palo in ['Corazones', 'Diamantes'] else "#111111"
-            st.markdown(f"""
-                <div style="background-color: white; color: {color_pc}; border-radius: 8px; padding: 10px 0px; text-align: center; font-size: 20px; font-weight: bold; border: 2px solid #ccc;">
-                    {carta.valor} {carta.simbolo}
-                </div>
-            """, unsafe_allow_html=True)
-    st.info(f"Jugada de la PC: **{res_pc[1]}**")
-
-    st.divider()
-
-    st.markdown("### 🤠 Tu Mano Final")
-    cols_j = st.columns(5)
-    for i, carta in enumerate(st.session_state.mano_jugador):
-        with cols_j[i]:
-            color_j = "#ff4b4b" if carta.palo in ['Corazones', 'Diamantes'] else "#111111"
-            st.markdown(f"""
-                <div style="background-color: white; color: {color_j}; border-radius: 8px; padding: 10px 0px; text-align: center; font-size: 20px; font-weight: bold; border: 2px solid #ccc;">
-                    {carta.valor} {carta.simbolo}
-                </div>
-            """, unsafe_allow_html=True)
-    st.info(f"Tu jugada: **{res_jugador[1]}**")
-
-    ganado = False
-    empate = False
-    if res_jugador[0] > res_pc[0]:
-        ganado = True
-    elif res_jugador[0] < res_pc[0]:
-        ganado = False
-    else:
-        if res_jugador[2] > res_pc[2]:
-            ganado = True
-        elif res_jugador[2] < res_pc[2]:
-            ganado = False
-        else:
-            empate = True
-
-    st.markdown("### 🏆 Resultado de la Ronda")
-    if empate:
-        st.warning("🤝 ¡Empate! Se te devuelve la apuesta.")
-    elif ganado:
-        st.balloons()
-        st.success(f"🎉 ¡Has ganado ${st.session_state.apuesta}! 🎉")
-        st.session_state.fichas += st.session_state.apuesta
-    else:
-        st.error(f"💀 Has perdido ${st.session_state.apuesta}.")
-        st.session_state.fichas -= st.session_state.apuesta
-
-    st.write("")
-    if st.button("🎮 Volver a la Mesa", type="primary", use_container_width=True):
-        st.session_state.estado = "INICIO"
-        st.rerun()
