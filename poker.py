@@ -81,7 +81,7 @@ if "fichas" not in st.session_state:
 if "estado" not in st.session_state:
     st.session_state.estado = "INICIO"  # INICIO, CAMBIO, RESULTADO
 
-st.title("🎰 Póker en Streamlit")
+st.title("🎰 poker valdivieso")
 st.sidebar.metric(label="Tus Fichas", value=f"${st.session_state.fichas}")
 
 if st.session_state.fichas <= 0:
