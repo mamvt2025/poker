@@ -169,4 +169,30 @@ if st.session_state.estado == "INICIO" and st.session_state.fichas > 0:
     # 2. Esquina Superior Derecha (Sofía)
     st.markdown("""
         <div class="player-corner" style="grid-column: 2; grid-row: 1;">
-            <span style="font-size: 26
+            <span style="font-size: 26px;">👩‍🦰</span><br>
+            <b>Sofía</b><br>
+            <small style="color: #ffd700;">🪙 Apostó $20</small>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Centro de la mesa (Cartas de referencia y paño)
+    st.markdown("""
+        <div class="center-pot">
+            <h4 style="color: #fff59d; margin-bottom: 10px;">♠️ Cartas de Referencia en la Mesa ♥️</h4>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Fila de cartas en el centro
+    c_rc1, c_rc2, c_rc3, c_rc4, c_rc5 = st.columns(5)
+    with c_rc1: st.markdown('<div class="card-container">A♠️</div>', unsafe_allow_html=True)
+    with c_rc2: st.markdown('<div class="card-container">K♦️</div>', unsafe_allow_html=True)
+    with c_rc3: st.markdown('<div class="card-container">Q♣️</div>', unsafe_allow_html=True)
+    with c_rc4: st.markdown('<div class="card-container">J❤️</div>', unsafe_allow_html=True)
+    with c_rc5: st.markdown('<div class="card-container">10♠️</div>', unsafe_allow_html=True)
+
+    # 3. Esquina Inferior Izquierda (Juan)
+    st.markdown("""
+        <div class="player-corner" style="grid-column: 1; grid-row: 3;">
+            <span style="font-size: 26px;">🧔‍♂️</span><br>
+            <b>Juan</b><br>
+            <small style="color
