@@ -140,7 +140,6 @@ if st.session_state.estado == "INICIO" and st.session_state.fichas > 0:
         </div>
     """, unsafe_allow_html=True)
 
-    # Mostrar la gente apostando alrededor de la mesa
     col_p1, col_p2, col_p3 = st.columns(3)
     with col_p1:
         st.markdown("""
@@ -167,7 +166,6 @@ if st.session_state.estado == "INICIO" and st.session_state.fichas > 0:
     st.write("")
     st.markdown("### 🃏 Elige tus fichas y revisa las cartas sobre la mesa antes de jugar")
 
-    # Vista previa de cartas decorativas para elegir la apuesta
     prev_col1, prev_col2, prev_col3, prev_col4, prev_col5 = st.columns(5)
     prev_col1.markdown('<div class="card-container">A♠️</div>', unsafe_allow_html=True)
     prev_col2.markdown('<div class="card-container">K♦️</div>', unsafe_allow_html=True)
@@ -176,7 +174,6 @@ if st.session_state.estado == "INICIO" and st.session_state.fichas > 0:
     prev_col5.markdown('<div class="card-container">10♠️</div>', unsafe_allow_html=True)
 
     st.write("")
-    # Botones rápidos de selección de fichas
     c_b1, c_b2, c_b3, c_b4 = st.columns(4)
     with c_b1:
         if st.button("🪙 Ficha $5"): st.session_state.apuesta = min(5, st.session_state.fichas)
@@ -202,4 +199,100 @@ if st.session_state.estado == "INICIO" and st.session_state.fichas > 0:
 elif st.session_state.estado == "CAMBIO":
     st.markdown("""
         <div class="avatar-box" style="margin-bottom: 15px;">
-            <h4 style="margin
+            <h4 style="margin: 0; color: #d4af37;">🤖 Dealer Bot (Computadora)</h4>
+            <p style="margin: 0; font-size: 14px;">La casa observa tus movimientos en la mesa...</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("### 🤠 Tus Cartas Actuales:")
+    cols = st.columns(5)
+    descartes = []
+
+    for i, carta in enumerate(st.session_state.mano_jugador):
+        with cols[i]:
+            color_cart = "#ff4b4b" if carta.palo in ['Corazones', 'Diamantes'] else "#111111"
+            st.markdown(f"""
+                <div style="background-color: white; color: {color_cart}; border-radius: 8px; padding: 12px 0px; text-align: center; font-size: 22px; font-weight: bold; border: 2px solid #d4af37; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+                    {carta.valor} <span style="font-size: 26px;">{carta.simbolo}</span>
+                </div>
+            """, unsafe_allow_html=True)
+            if st.checkbox(f"Cambiar #{i + 1}", key=f"c_{i}"):
+                descartes.append(i)
+
+    st.write("")
+    if st.button("🔄 Procesar Cambio y Ver Ganador", type="primary", use_container_width=True):
+        if descartes:
+            nuevas_cartas = st.session_state.mazo.repartir(len(descartes))
+            for idx, nueva in zip(descartes, nuevas_cartas):
+                st.session_state.mano_jugador[idx] = nueva
+
+        eval_pc_inicial = evaluar_mano(st.session_state.mano_pc)
+        if eval_pc_inicial[0] < 2:
+            indices_pc = random.sample(range(5), 2)
+            nuevas_pc = st.session_state.mazo.repartir(2)
+            for idx, nueva in zip(indices_pc, nuevas_pc):
+                st.session_state.mano_pc[idx] = nueva
+
+        st.session_state.estado = "RESULTADO"
+        st.rerun()
+
+# FASE 3: Mostrar resultados
+elif st.session_state.estado == "RESULTADO":
+    res_jugador = evaluar_mano(st.session_state.mano_jugador)
+    res_pc = evaluar_mano(st.session_state.mano_pc)
+
+    st.markdown("### 🤖 Mano de la Computadora")
+    cols_pc = st.columns(5)
+    for i, carta in enumerate(st.session_state.mano_pc):
+        with cols_pc[i]:
+            color_pc = "#ff4b4b" if carta.palo in ['Corazones', 'Diamantes'] else "#111111"
+            st.markdown(f"""
+                <div style="background-color: white; color: {color_pc}; border-radius: 8px; padding: 10px 0px; text-align: center; font-size: 20px; font-weight: bold; border: 2px solid #ccc;">
+                    {carta.valor} {carta.simbolo}
+                </div>
+            """, unsafe_allow_html=True)
+    st.info(f"Jugada de la PC: **{res_pc[1]}**")
+
+    st.divider()
+
+    st.markdown("### 🤠 Tu Mano Final")
+    cols_j = st.columns(5)
+    for i, carta in enumerate(st.session_state.mano_jugador):
+        with cols_j[i]:
+            color_j = "#ff4b4b" if carta.palo in ['Corazones', 'Diamantes'] else "#111111"
+            st.markdown(f"""
+                <div style="background-color: white; color: {color_j}; border-radius: 8px; padding: 10px 0px; text-align: center; font-size: 20px; font-weight: bold; border: 2px solid #ccc;">
+                    {carta.valor} {carta.simbolo}
+                </div>
+            """, unsafe_allow_html=True)
+    st.info(f"Tu jugada: **{res_jugador[1]}**")
+
+    ganado = False
+    empate = False
+    if res_jugador[0] > res_pc[0]:
+        ganado = True
+    elif res_jugador[0] < res_pc[0]:
+        ganado = False
+    else:
+        if res_jugador[2] > res_pc[2]:
+            ganado = True
+        elif res_jugador[2] < res_pc[2]:
+            ganado = False
+        else:
+            empate = True
+
+    st.markdown("### 🏆 Resultado de la Ronda")
+    if empate:
+        st.warning("🤝 ¡Empate! Se te devuelve la apuesta.")
+    elif ganado:
+        st.balloons()
+        st.success(f"🎉 ¡Has ganado ${st.session_state.apuesta}! 🎉")
+        st.session_state.fichas += st.session_state.apuesta
+    else:
+        st.error(f"💀 Has perdido ${st.session_state.apuesta}.")
+        st.session_state.fichas -= st.session_state.apuesta
+
+    st.write("")
+    if st.button("🎮 Volver a la Mesa", type="primary", use_container_width=True):
+        st.session_state.estado = "INICIO"
+        st.rerun()
